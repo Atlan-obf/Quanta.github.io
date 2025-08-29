@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>cica menu</title>
+<title>Quanta Menu</title>
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -547,7 +547,20 @@ document.addEventListener("DOMContentLoaded", function() {
         const checkbox = selectedItem.querySelector("input[type='checkbox']");
         if (checkbox) {
           checkbox.checked = !checkbox.checked;
-          window.MachoSendLuaMessage(JSON.stringify({ event: 'toggle', action: action.replace('toggle-', ''), state: checkbox.checked }));
+          
+          // Špeciálna logika pre noclip
+          if (action === 'toggle-noclip') {
+            window.MachoSendLuaMessage(JSON.stringify({ 
+              event: 'noclipToggle', 
+              state: checkbox.checked 
+            }));
+          } else {
+            window.MachoSendLuaMessage(JSON.stringify({ 
+              event: 'toggle', 
+              action: action.replace('toggle-', ''), 
+              state: checkbox.checked 
+            }));
+          }
         }
       } else {
         window.MachoSendLuaMessage(JSON.stringify({ event: 'menuAction', action: action }));
@@ -556,6 +569,12 @@ document.addEventListener("DOMContentLoaded", function() {
       handleBack();
     } else if (data.action === 'setHeaderBanner') {
       setHeaderBanner(data.url);
+    } else if (data.event === 'noclipStatus') {
+      // Synchronizácia stavu checkboxu so serverom
+      const noclipToggle = document.getElementById('noclipToggle');
+      if (noclipToggle) {
+        noclipToggle.checked = data.state;
+      }
     }
   });
 
